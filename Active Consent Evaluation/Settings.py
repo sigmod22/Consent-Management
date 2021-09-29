@@ -14,11 +14,8 @@ class Setting:
 
 class TPCH_Q8(Setting):
     def read_dataset(self,tree_num):
-        path = 'TPCH_RESULTS'
-        if not os.path.exists(path):
-            os.makedirs(path)
-        dataset_str = str(path) + "\TPCH_Dataset_Q8_labels_Tree{}_labels0.csv".format(tree_num)
-        self.dataset = pd.read_csv(dataset_str, low_memory=False)
+        
+        self.dataset = pd.read_csv("**** METADATA FILE- TPC-H Q8 ****", low_memory=False)
     def __init__(self, tree_number):
         self.read_dataset(tree_num=tree_number)
         self.X, self.y = self.dataset.iloc[:, :-1], self.dataset.iloc[:, -1]
@@ -71,10 +68,10 @@ class TPCH_Q8(Setting):
         transactions = pd.DataFrame(self.X['Transaction id']).astype(int)
     def get_Boolean_Provenance(self):
         path="TPCH_RESULTS"
-        text_file_dnf = open(str(path) + r"\UseCases_Expressions_TPC_H_Q8_Dnf.txt", "r")
+        text_file_dnf = open("****BOOLEAN PROVENANCE FILE- DNF****", "r")
         lines_dnf = text_file_dnf.readlines()
 
-        text_file_cnf = open(str(path) + r"\UseCases_Expressions_TPC_H_Q8_Cnf.txt", "r")
+        text_file_cnf = open("****BOOLEAN PROVENANCE FILE- CNF****", "r")
 
         lines_cnf = text_file_cnf.readlines()
 
@@ -101,12 +98,8 @@ class H1B(Setting):
         self.X, self.y = self.X.to_numpy(), self.y.to_numpy()
         self.dataset = self.dataset.replace({"CERTIFIED": 1, "WITHDRAWN": 0})
     def read_dataset(self):
-        path = 'H1B_RESULTS'
-        if not os.path.exists(path):
-            os.makedirs(path)
-        dataset_path_str = str(path) + "\H1B_Dataset.csv"
-
-        dataset = pd.read_csv(dataset_path_str, low_memory=False)
+   
+        self.dataset = pd.read_csv("**** METADATA FILE- H1B ****", low_memory=False)
         return dataset
     def preprocess_data(self):
         lb_make = LabelEncoder()
@@ -134,14 +127,13 @@ class H1B(Setting):
         expressions_cnf = []
         regular = []
         for query in query_number:
-            dnf_file = open(str(path) + r"\H1B_{}_Q{}\UseCases_H1B_DNF_Expressions.txt".format(num_of_companies, query),
-                            "r")
+            dnf_file = open("****BOOLEAN PROVENANCE FILE-DNF****", "r")
+
             lines_dnf = dnf_file.readlines()
             for line in lines_dnf:
                 line = line.replace("p", "v")
                 expressions_dnf.append(algebra.parse(line))
-            cnf_file = open(str(path) + r"\H1B_{}_Q{}\UseCases_H1B_CNF_Expressions.txt".format(num_of_companies, query),
-                            "r")
+            cnf_file = open("****BOOLEAN PROVENANCE FILE- CNF****", "r")
             lines_cnf = cnf_file.readlines()
             for line in lines_cnf:
                 line = line.replace("p", "v")
@@ -160,7 +152,7 @@ class H1B_S3(H1B):
         num_of_companies = 3
         num_of_uc = 1652
         queries_numbers = list(range(1, num_of_uc + 1))
-        dnf_s, cnf_s = self.read_Boolean_expressions_H1B("H1B_RESULTS", query_number=queries_numbers,
+        dnf_s, cnf_s = self.read_Boolean_expressions_H1B("H1B", query_number=queries_numbers,
                                                          num_of_companies=num_of_companies)
         self.ls_dnf = dnf_s
         self.ls_cnf = cnf_s
